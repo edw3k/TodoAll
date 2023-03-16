@@ -1,9 +1,8 @@
 package com.example.ncaandroid
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import com.example.ncaandroid.TaskDAO
 
 @Database(
     entities = [TaskData::class],
@@ -27,4 +26,16 @@ abstract class AppDatabase: RoomDatabase() {
             INSTANCE = null
         }
     }
+}
+
+
+
+
+@Dao
+interface TaskDAO {
+    @Query("SELECT * FROM taskdata")
+    fun loadAllTasks(): List<TaskData>
+
+    @Insert
+    fun insert(task: TaskData)
 }

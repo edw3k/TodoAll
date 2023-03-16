@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 // This is the adapter class for the RecyclerView that will display the tasks
-class TasksAdapter(val tasks: List<TaskData>, val context: Context)
+class TasksAdapter(var tasks: List<TaskData>, val context: Context)
     : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     public var temp = tasks
@@ -67,9 +67,11 @@ class TasksAdapter(val tasks: List<TaskData>, val context: Context)
 
         // When the user clicks the trashButton, the task will be deleted
         holder.trashButton.setOnClickListener {
-            tasks.toMutableList().removeAt(position)
-            notifyItemRemoved(position) // Notify the adapter that the item was removed
-            notifyItemRangeChanged(position, tasks.size) // Notify the adapter that the range of
+            val mutableTasks = tasks.toMutableList()
+            mutableTasks.removeAt(position)
+            tasks = mutableTasks.toList()
+            notifyDataSetChanged()
+
         }
 
         // When the user clicks the checkbox
