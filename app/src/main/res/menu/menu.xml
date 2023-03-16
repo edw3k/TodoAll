@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="@string/notes"
+        android:id="@+id/notes"
+        android:icon="@drawable/ic_baseline_notes_24" />
+    <item
+        android:title="@string/tasks"
+        android:id="@+id/tasks"
+        android:icon="@drawable/ic_baseline_task_alt_24" />
+    <item
+        android:title="@string/stopwatch"
+        android:id="@+id/stopwatch"
+        android:icon="@drawable/ic_baseline_watch_later_24" />
+</menu>
