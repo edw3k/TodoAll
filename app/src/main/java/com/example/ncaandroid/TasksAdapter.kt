@@ -3,6 +3,7 @@ package com.example.ncaandroid
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -104,10 +106,23 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
             }
         }
 
+        // Launch the TaskDetailsFragment when the user clicks the TextView
         holder.tv.setOnClickListener {
-            // TODO: Open task details
+            val fragment = TaskDetailsFragment()
+            val args = Bundle()
+            args.putSerializable("taskData", task)
+            fragment.arguments = args
+
+            val transaction = (context as AppCompatActivity)
+                .supportFragmentManager
+                .beginTransaction()
+            transaction.replace(R.id.fragment_container, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
+
     }
+
     private fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://my-json-server.typicode.com/ManelRosPuig/nca-android-2/")
