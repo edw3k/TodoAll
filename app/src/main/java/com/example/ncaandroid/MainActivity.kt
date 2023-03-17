@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.ncaandroid.databinding.ActivityMainBinding
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch {
             db = AppDatabase.getInstance(applicationContext)!!
 
-            db.TaskDAO().insert(TaskData(
+            db.taskDao().insert(TaskData(
                 null,
                 "GOL",
                 2,
@@ -42,11 +41,8 @@ class MainActivity : AppCompatActivity() {
                 "http://timeride.com"
             ))
 
-            val tasks = db.TaskDAO().loadAllTasks()
+            //val tasks = db.TaskDAO().loadAllTasks()
 
-            for (task in tasks) {
-                Log.i("task", task.toString())
-            }
         }
 
         // Remove the title bar

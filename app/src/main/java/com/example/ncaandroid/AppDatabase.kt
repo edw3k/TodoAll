@@ -1,41 +1,47 @@
-package com.example.ncaandroid
+    package com.example.ncaandroid
 
-import android.content.Context
-import androidx.room.*
-import com.example.ncaandroid.TaskDAO
+    import android.content.Context
+    import androidx.room.*
 
-@Database(
-    entities = [TaskData::class],
-    version = 1
-)
-abstract class AppDatabase: RoomDatabase() {
-    abstract fun TaskDAO(): TaskDAO
+    @Database(
+        entities = [TaskData::class],
+        version = 2,
+        exportSchema = false
+    )
+    abstract class AppDatabase: RoomDatabase() {
+        abstract fun taskDao(): TaskDAO
 
-    companion object {
-        private var INSTANCE: AppDatabase? = null
+        companion object {
+            private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase? {
-            if (INSTANCE == null) {
-                synchronized(AppDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "todoall.db").build()
-                } }
-            return INSTANCE
-        }
+            fun getInstance(context: Context): AppDatabase {
+                if (INSTANCE == null) {
+                    synchronized(AppDatabase::class) {
+                        INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "todoall.db").build()
+                    }
+                }
+                return INSTANCE!!
+            }
 
-        fun destroyInstance() {
-            INSTANCE = null
+            fun destroyInstance() {
+                INSTANCE = null
+            }
         }
     }
-}
 
 
 
 
-@Dao
-interface TaskDAO {
-    @Query("SELECT * FROM taskdata")
-    fun loadAllTasks(): List<TaskData>
 
-    @Insert
-    fun insert(task: TaskData)
-}
+    @Dao
+    interface TaskDAO {
+        @Query("SELECT * FROM tasks")
+        fun loadAllTasks(): List<TaskData>
+
+        @Insert
+        fun insert(task: TaskData)
+
+        @Query("DELETE FROM tasks WHERE id = :taskId")
+        fun deleteById(taskId: Long)
+
+    }

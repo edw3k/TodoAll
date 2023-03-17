@@ -3,6 +3,7 @@ package com.example.ncaandroid
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 
 // This is the adapter class for the RecyclerView that will display the tasks
 class TasksAdapter(var tasks: List<TaskData>, val context: Context)
@@ -67,14 +76,22 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
 
         // When the user clicks the trashButton, the task will be deleted
         holder.trashButton.setOnClickListener {
-            val mutableTasks = tasks.toMutableList()
-            mutableTasks.removeAt(position)
-            tasks = mutableTasks.toList()
-            notifyDataSetChanged()
-
+            val position = holder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val task = tasks[position]
+                val taskDAO = AppDatabase.getInstance(context)?.taskDao()
+                taskDAO?.let {
+                    GlobalScope.launch {
+                        it.deleteById(task.id!!.toLong())
+                    }
+                    tasks = tasks.filter { it != task }
+                    notifyDataSetChanged()
+                }
+            }
         }
 
-        // When the user clicks the checkbox
+
+                    // When the user clicks the checkbox
         holder.checkBox.setOnClickListener {
             task.isDone = holder.checkBox.isChecked // Set the isDone property of the task to the
             // value of the checkbox
@@ -90,6 +107,11 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
         holder.tv.setOnClickListener {
             // TODO: Open task details
         }
+    }
+    private fun getRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://my-json-server.typicode.com/ManelRosPuig/nca-android-2/")
+            .addConverterFactory(GsonConverterFactory.create()) .build()
     }
 
     // This is the ViewHolder class for the RecyclerView

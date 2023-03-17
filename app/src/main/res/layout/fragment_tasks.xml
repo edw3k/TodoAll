@@ -23,6 +23,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search tasks..."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_tasks"
             android:layout_width="0dp"
@@ -34,7 +45,7 @@
             app:layout_constraintBottom_toTopOf="@+id/orderByButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
             tools:listitem="@layout/task_item" />
 
         <Button

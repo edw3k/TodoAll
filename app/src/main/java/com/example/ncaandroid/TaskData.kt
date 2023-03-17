@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity
+@Entity(tableName = "tasks")
 data class TaskData(@PrimaryKey(autoGenerate = true) var id: Int?,
                     @SerializedName("content") var content: String?,
                     @SerializedName("priority") var priority: Int?,
@@ -12,3 +12,4 @@ data class TaskData(@PrimaryKey(autoGenerate = true) var id: Int?,
                     @SerializedName("date") var date: String?,
                     @SerializedName("telf") var telf: String?,
                     @SerializedName("web") var web: String?)
+
