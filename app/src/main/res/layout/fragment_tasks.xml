@@ -28,11 +28,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="Search tasks..."
+            android:queryHint="Search tasks"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/textView2"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_tasks"

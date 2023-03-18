@@ -27,7 +27,6 @@ class Tasks : Fragment() {
     public var tasks: List<TaskData> = listOf() // List of tasks
     public var recyclerView: RecyclerView? = null // RecyclerView
     private var priority: Priority = Priority.DEFAULT // Priority of task
-    private var addButton: Button? = null // Add button
     private var addButtonPortrait: Button? = null // Add button (portrait mode)
     private lateinit var etContent: EditText // EditText for content of task
     private lateinit var priorityButton: Button // Button for priority of task
@@ -77,13 +76,13 @@ class Tasks : Fragment() {
         recyclerView?.layoutManager = layoutManager
 
         // Find the views
-        addButton = view.findViewById(R.id.add_button) as Button?
+
         addButtonPortrait = view.findViewById(R.id.add_btn) as Button?
         etContent = view.findViewById(R.id.taskContent) as EditText
         priorityButton = view.findViewById(R.id.priorityButton) as Button
         orderByButton = view.findViewById(R.id.orderByButton) as Button?
         orderByButtonLandscape = view.findViewById(R.id.orderByButtonLandscape) as Button?
-        val searchView = view.findViewById(R.id.searchView) as androidx.appcompat.widget.SearchView
+        val searchView = view.findViewById(R.id.searchView) as SearchView
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 //TODO: backend search
@@ -98,6 +97,12 @@ class Tasks : Fragment() {
             }
         })
 
+        val addButton = view.findViewById(R.id.add_btn) as Button
+        addButton.setOnClickListener {
+            onAddButtonClicked()
+        }
+
+
         return view // Return the view
     }
 
@@ -105,9 +110,6 @@ class Tasks : Fragment() {
     @SuppressLint("NotifyDataSetChanged") // Suppress the warning about notifyDataSetChanged()
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        addButton?.setOnClickListener{
-
-        }
 
     }
     private fun filterTasks(searchText: String) {
@@ -115,6 +117,14 @@ class Tasks : Fragment() {
             task.content?.contains(searchText, true) ?: false
         }
         recyclerView?.adapter = TasksAdapter(filteredTasks, requireContext())
+    }
+
+    private fun onAddButtonClicked() {
+        val addTaskFragment = AddTask()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, addTaskFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 /*
