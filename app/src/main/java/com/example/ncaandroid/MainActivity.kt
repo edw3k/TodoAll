@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
                 "http://timeride.com"
             ))
 
-            //val tasks = db.TaskDAO().loadAllTasks()
+            val tasks = db.taskDao().loadAllTasks()
+            Log.d("TASKS", tasks.toString())
 
         }
 

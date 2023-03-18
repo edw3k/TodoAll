@@ -34,6 +34,7 @@ class TaskDetailsFragment : Fragment() {
         backButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+
         return view
     }
 }
