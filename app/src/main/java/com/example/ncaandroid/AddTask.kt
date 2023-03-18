@@ -42,15 +42,16 @@ class AddTask : Fragment() {
             val task = TaskData(null, content, priority, isDone, date, telf, web)
 
             GlobalScope.launch {
+                //if all the fields are filled, then add the task to the database
                 db.taskDao().insert(task)
             }
+            // Display a toast message to let the user know the task was added
+            Toast.makeText(requireContext(), "Task added", Toast.LENGTH_SHORT).show()
 
-
-
-            if (content.isNotEmpty()) {
-                Toast.makeText(requireContext(), "Task added", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Task not added", Toast.LENGTH_SHORT).show()
+            val backButton = view.findViewById<View>(R.id.backButton)
+            backButton.setOnClickListener {
+                //go back to the previous fragment
+                requireActivity().supportFragmentManager.popBackStack()
             }
 
         }
