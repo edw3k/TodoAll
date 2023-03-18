@@ -44,4 +44,7 @@
         @Query("DELETE FROM tasks WHERE id = :taskId")
         fun deleteById(taskId: Long)
 
+        @Update
+        fun update(task: TaskData)
+
     }
