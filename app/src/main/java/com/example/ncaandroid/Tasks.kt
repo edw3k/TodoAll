@@ -1,7 +1,6 @@
 package com.example.ncaandroid
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -11,27 +10,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Tasks : Fragment() {
     public var tasks: List<TaskData> = listOf() // List of tasks
     public var recyclerView: RecyclerView? = null // RecyclerView
     private var priority: Priority = Priority.DEFAULT // Priority of task
-    private var addButton: Button? = null // Add button
     private var addButtonPortrait: Button? = null // Add button (portrait mode)
     private lateinit var etContent: EditText // EditText for content of task
     private lateinit var priorityButton: Button // Button for priority of task
     private var orderByButton: Button? = null // Button for ordering tasks
     private var orderByButtonLandscape: Button? = null // Button for ordering tasks (landscape mode)
     private var styleChanged = -1 // Necessary for saving the state of the app
+    private lateinit var db: AppDatabase
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -47,31 +50,81 @@ class Tasks : Fragment() {
         // Set up the RecyclerView adapter
         val adapter = TasksAdapter(tasks, requireContext())
         recyclerView?.adapter = adapter
+        db = AppDatabase.getInstance(requireContext())!!
 
-        GlobalScope.launch {
-            val call =  getRetrofit().create(TaskAPIService::class.java)
-                .getAllTasks().execute()
-            val taskReponse = call.body() as TaskResponse
-            tasks = taskReponse.tasks
-            MainScope().launch {
-                recyclerView?.adapter = TasksAdapter(tasks, requireContext())
+        if (tasks.isEmpty()) {
+            GlobalScope.launch {
+                val call = getRetrofit().create(TaskAPIService::class.java)
+                    .getAllTasks().execute()
+                val taskReponse = call.body() as TaskResponse
+                val tasksFromApi = taskReponse.tasks
+
+                val tasksFromDb = db.taskDao().loadAllTasks()
+
+                // Merge tasks from the API and the local database
+                tasks = tasksFromApi + tasksFromDb
+
+                MainScope().launch {
+                    recyclerView?.adapter = TasksAdapter(tasks, requireContext())
+                }
             }
         }
+
 
         // Set up the RecyclerView layout manager
         val layoutManager = LinearLayoutManager(activity)
         recyclerView?.layoutManager = layoutManager
 
-
         // Find the views
-        addButton = view.findViewById(R.id.add_button) as Button?
+
         addButtonPortrait = view.findViewById(R.id.add_btn) as Button?
         etContent = view.findViewById(R.id.taskContent) as EditText
         priorityButton = view.findViewById(R.id.priorityButton) as Button
         orderByButton = view.findViewById(R.id.orderByButton) as Button?
         orderByButtonLandscape = view.findViewById(R.id.orderByButtonLandscape) as Button?
+        val searchView = view.findViewById(R.id.searchView) as SearchView
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                //TODO: backend search
+                filterTasks(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                //TODO: backend search
+                filterTasks(newText)
+                return false
+            }
+        })
+
+        val addButton = view.findViewById(R.id.add_btn) as Button
+        addButton.setOnClickListener {
+            onAddButtonClicked()
+        }
+
 
         return view // Return the view
+    }
+
+
+    @SuppressLint("NotifyDataSetChanged") // Suppress the warning about notifyDataSetChanged()
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+    }
+    private fun filterTasks(searchText: String) {
+        val filteredTasks = tasks.filter { task ->
+            task.content?.contains(searchText, true) ?: false
+        }
+        recyclerView?.adapter = TasksAdapter(filteredTasks, requireContext())
+    }
+
+    private fun onAddButtonClicked() {
+        val addTaskFragment = AddTask()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, addTaskFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 /*
@@ -80,16 +133,13 @@ class Tasks : Fragment() {
         outState.putParcelableArrayList("tasks", tasks) // Save the tasks
         outState.putInt("styleChanged", styleChanged) // Save the styleChanged variable
     }
-
     @SuppressLint("NotifyDataSetChanged") // Suppress the warning about notifyDataSetChanged()
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-
         if (savedInstanceState != null) { // If the user has been using the app, then the tasks will continue to be displayed
             tasks = savedInstanceState.getParcelableArrayList<Task>("tasks") as ArrayList<Task> // Get the tasks
             styleChanged = savedInstanceState.getInt("styleChanged") // Get the styleChanged variable
         }
-
         // Change the background color of the priority button depending on the priority of the task
         when (styleChanged) {
             0 -> { // Blue theme
@@ -123,12 +173,10 @@ class Tasks : Fragment() {
                 priority = Priority.DEFAULT
             }
         }
-
         // Find the RecyclerView and set its layout manager and adapter
         recyclerView = view?.findViewById(R.id.recyclerview_tasks)
         recyclerView?.layoutManager = LinearLayoutManager(context)
         recyclerView?.adapter = context?.let { TasksAdapter(tasks, it) }
-
         // Set the onClickListener for the priority button
         addButton?.setOnClickListener {
             if (etContent.text.toString() != "") { // If the EditText is not empty
@@ -155,7 +203,6 @@ class Tasks : Fragment() {
                 dialog.show()
             }
         }
-
         // The same with the addButtonPortrait button
         addButtonPortrait?.setOnClickListener {
             if (etContent.text.toString() != "") {
@@ -179,11 +226,9 @@ class Tasks : Fragment() {
                 dialog.show()
             }
         }
-
         // Set the icon for the priorityButton
         priorityButton.setCompoundDrawablesWithIntrinsicBounds(
             R.drawable.ic_baseline_flag_24, 0, 0, 0)
-
         // Set the onClickListener for the orderByButton
         orderByButton?.setOnClickListener {
             if (orderByButton!!.text == "Order By Priority") { // If the button text is "Order By Priority"
@@ -196,7 +241,6 @@ class Tasks : Fragment() {
                 orderByButton!!.text = getString(R.string.order_by) // Change the button text
             }
         }
-
         // The same with the orderByButtonLandscape button
         orderByButtonLandscape?.setOnClickListener {
             if (orderByButtonLandscape!!.text == "Order By Priority") {
@@ -209,7 +253,6 @@ class Tasks : Fragment() {
                 orderByButtonLandscape!!.text = getString(R.string.order_by)
             }
         }
-
         // Set the onClickListener for the priorityButton
         priorityButton.setOnClickListener {
             // Create a AlertDialog to let the user choose the priority of the task
@@ -254,7 +297,6 @@ class Tasks : Fragment() {
             dialog.show()
         }
     }
-
      */
 
     private fun getRetrofit(): Retrofit {
@@ -262,4 +304,8 @@ class Tasks : Fragment() {
             .baseUrl("https://my-json-server.typicode.com/ManelRosPuig/nca-android-2/")
             .addConverterFactory(GsonConverterFactory.create()) .build()
     }
+
+
+
+
 }

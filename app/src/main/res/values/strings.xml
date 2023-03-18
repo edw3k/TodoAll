@@ -44,4 +44,6 @@
     <string name="insert_task_hint">Insert your task here…</string>
     <string name="order_by">Order By Priority</string>
     <string name="order_by_date">Order By Date</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
