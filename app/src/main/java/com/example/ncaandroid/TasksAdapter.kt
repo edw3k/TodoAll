@@ -92,7 +92,6 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
             }
         }
 
-
                     // When the user clicks the checkbox
         holder.checkBox.setOnClickListener {
             task.isDone = holder.checkBox.isChecked // Set the isDone property of the task to the
