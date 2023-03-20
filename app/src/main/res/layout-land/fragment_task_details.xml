@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Content -->
+        <TextView
+            android:id="@+id/contentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content:"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/contentValueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- Priority -->
+        <TextView
+            android:id="@+id/priorityTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Priority:"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/priorityValueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- Is Done -->
+        <TextView
+            android:id="@+id/isDoneTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Is Done:"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/isDoneValueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- Date -->
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date:"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/dateValueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- Telephone -->
+        <TextView
+            android:id="@+id/telfTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telephone:"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/telfValueTextView"
+            android:layout_width="386dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:inputType="phone"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/webTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_web"
+            android:drawablePadding="10dp"
+            android:text="Website:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/webValueTextView"
+            android:layout_width="390dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:inputType="textUri"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <!-- Save button -->
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="187dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:padding="16dp"
+        android:text="Save"
+        android:textColor="@android:color/white" />
+</LinearLayout>
+
+

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch {
             db = AppDatabase.getInstance(applicationContext)!!
-
+            /*
             db.taskDao().insert(TaskData(
                 null,
                 "GOL",
@@ -41,8 +41,7 @@ class MainActivity : AppCompatActivity() {
                 "http://timeride.com"
             ))
 
-            val tasks = db.taskDao().loadAllTasks()
-            Log.d("TASKS", tasks.toString())
+             */
 
         }
 
