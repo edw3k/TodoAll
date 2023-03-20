@@ -70,11 +70,30 @@ class Tasks : Fragment() {
             }
         }
 
+        /*
+        val task = arguments?.getSerializable("taskData") as TaskData?
+        if (task != null) {
+            tasks = tasks + task
+            recyclerView?.adapter = TasksAdapter(tasks, requireContext())
+        }
+
+         */
+
+
+
 
         // Set up the RecyclerView layout manager
         val layoutManager = LinearLayoutManager(activity)
         recyclerView?.layoutManager = layoutManager
 
+        /* Recieve the intent from AddTask.kt and update the tasks list
+
+        val task = arguments?.getSerializable("taskData") as TaskData?
+        if (task != null) {
+            tasks = tasks + task
+            recyclerView?.adapter = TasksAdapter(tasks, requireContext())
+        }
+        */
         // Find the views
 
         addButtonPortrait = view.findViewById(R.id.add_btn) as Button?

@@ -56,8 +56,8 @@ class TaskDetailsFragment : Fragment() {
            GlobalScope.launch {
                //Update the task in the database
                db.taskDao().update(task)
-
            }
+            // Go back to the previous fragment
             requireActivity().supportFragmentManager.popBackStack()
         }
 
