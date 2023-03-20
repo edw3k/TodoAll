@@ -5,13 +5,6 @@
     android:orientation="vertical">
 
     <!-- Back button -->
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="72dp"
-        android:layout_height="52dp"
-        android:src="@drawable/ic_arrow_back"
-        android:background="@null"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/contentTextView"
@@ -105,6 +98,7 @@
         android:id="@+id/telfValueTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:drawable/edit_text"
         android:inputType="phone"
         android:padding="10dp"
         android:layout_marginTop="8dp"/>
@@ -125,6 +119,7 @@
         android:id="@+id/webValueTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:drawable/edit_text"
         android:inputType="textUri"
         android:padding="10dp"
         android:layout_marginTop="8dp"
