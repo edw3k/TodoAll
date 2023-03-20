@@ -29,7 +29,7 @@ class AddTask : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        db = AppDatabase.getInstance(requireContext())!!
+        db = AppDatabase.getInstance(requireContext())
 
         // Get reference to the RecyclerView and the tasks list
         recyclerView = requireActivity().findViewById(R.id.recyclerview_tasks)
@@ -46,10 +46,10 @@ class AddTask : Fragment() {
             val web = view.findViewById<EditText>(R.id.webValueTextView).text.toString()
 
             // Create a new TaskData object and add it to the list of tasks
-            val newTask = TaskData(null, content, priority, isDone, date, telf, web)
+            val newTask = TaskData(null,content, priority, isDone, date, telf, web)
             tasks.add(newTask)
             GlobalScope.launch {
-                // Add the new task to the local database
+                // Add the new task to the database
                 db.taskDao().insert(newTask)
             }
 
@@ -61,4 +61,3 @@ class AddTask : Fragment() {
         }
     }
 }
-

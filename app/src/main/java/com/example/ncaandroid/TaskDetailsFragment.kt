@@ -10,11 +10,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 private lateinit var db: AppDatabase
-
+private lateinit var tasks: MutableList<TaskData>
+private lateinit var recyclerView: RecyclerView
 class TaskDetailsFragment : Fragment() {
 
     override fun onCreateView(
@@ -27,6 +29,10 @@ class TaskDetailsFragment : Fragment() {
         // Get the task data from the arguments bundle
         val taskData = arguments?.getSerializable("taskData") as TaskData
         db = AppDatabase.getInstance(requireContext())!!
+
+        // Get reference to the RecyclerView and the tasks list
+        recyclerView = requireActivity().findViewById(R.id.recyclerview_tasks)
+        tasks = (recyclerView.adapter as TasksAdapter).tasks as MutableList<TaskData>
 
         // Set the EditTexts with the task data
         view.findViewById<EditText>(R.id.contentValueTextView).setText(taskData.content)
@@ -53,11 +59,16 @@ class TaskDetailsFragment : Fragment() {
                 view.findViewById<EditText>(R.id.telfValueTextView).text.toString(),
                 view.findViewById<EditText>(R.id.webValueTextView).text.toString()
             )
+            // Update the task in the list of tasks
+            tasks[tasks.indexOf(taskData)] = task
            GlobalScope.launch {
                //Update the task in the database
                db.taskDao().update(task)
            }
-            // Go back to the previous fragment
+            // Notify the adapter that the data has changed
+            recyclerView.adapter?.notifyDataSetChanged()
+
+            // Return to the Tasks fragment
             requireActivity().supportFragmentManager.popBackStack()
         }
 
