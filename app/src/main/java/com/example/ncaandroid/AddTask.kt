@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -51,8 +52,10 @@ class AddTask : Fragment() {
                 priority = priorityEditText.text.toString().toIntOrNull() ?: 0
             }
 
-            val isDoneEditText = view.findViewById<EditText>(R.id.isDoneValueTextView)
-            val isDone = isDoneEditText.text.toString().toBoolean() ?: false
+            val isDoneEditText = view.findViewById<Spinner>(R.id.isDoneValueTextView)
+            val isDone = isDoneEditText.selectedItem.toString().toBoolean()
+
+
 
             val dateEditText = view.findViewById<EditText>(R.id.dateValueTextView)
             val date = dateEditText.text.toString().takeIf { it.isNotBlank() }
@@ -77,7 +80,7 @@ class AddTask : Fragment() {
                 return@setOnClickListener
             }
 
-            if (isDoneEditText.text.isBlank()) {
+            if (isDoneEditText.selectedItem.toString().isBlank()) {
                 view.findViewById<EditText>(R.id.isDoneValueTextView).error =
                     "This field is required"
                 return@setOnClickListener
