@@ -125,10 +125,10 @@
         android:id="@+id/webValueTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textUri"
-        android:padding="10dp"
         android:layout_marginTop="8dp"
-        />
+        android:foregroundTint="#0020FF"
+        android:inputType="textUri"
+        android:padding="10dp" />
 
     <Button
         android:id="@+id/saveButton"

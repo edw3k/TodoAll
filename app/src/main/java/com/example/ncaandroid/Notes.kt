@@ -103,7 +103,7 @@ class Notes : Fragment() {
         horizontalRecyclerView?.adapter = context?.let { ListAdapter(notes, it) } // Adapter
 
         // We get the button from the layout
-        val addButton: Button? = view?.findViewById(R.id.add_btn) // Add button
+        val addButton: Button? = view?.findViewById(R.id.add_btn_portrait) // Add button
         addButton?.setOnClickListener { // When the user clicks the button
             MainActivity.instance?.openDetailViewNote() // We open the detail view
             DetailViewNote.instance?.reset() // We reset the detail view
