@@ -36,7 +36,7 @@
     @Dao
     interface TaskDAO {
         @Query("SELECT * FROM tasks")
-        fun loadAllTasks(): List<TaskData>
+        fun loadAllTasks(): MutableList<TaskData>
 
         @Insert
         fun insert(task: TaskData)
@@ -46,5 +46,8 @@
 
         @Update
         fun update(task: TaskData)
+
+        @Insert
+        fun insertAllTasks(tasks: MutableList<TaskData>)
 
     }

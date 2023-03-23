@@ -1,30 +1,26 @@
 package com.example.ncaandroid
 
 import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class Tasks : Fragment() {
-    public var tasks: List<TaskData> = listOf() // List of tasks
+    // public var tasks: List<TaskData> = listOf() // List of tasks
     public var recyclerView: RecyclerView? = null // RecyclerView
     private var priority: Priority = Priority.DEFAULT // Priority of task
     private var addButtonPortrait: Button? = null // Add button (portrait mode)
@@ -48,25 +44,22 @@ class Tasks : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerview_tasks) as RecyclerView?
 
         // Set up the RecyclerView adapter
-        val adapter = TasksAdapter(tasks, requireContext())
+        val adapter = TasksAdapter(requireContext())
         recyclerView?.adapter = adapter
         db = AppDatabase.getInstance(requireContext())!!
 
-        if (tasks.isEmpty()) {
-            GlobalScope.launch {
-                val call = getRetrofit().create(TaskAPIService::class.java)
-                    .getAllTasks().execute()
-                val taskReponse = call.body() as TaskResponse
-                val tasksFromApi = taskReponse.tasks
-
-                val tasksFromDb = db.taskDao().loadAllTasks()
-
-                // Merge tasks from the API and the local database
-                tasks = tasksFromApi + tasksFromDb
-
-                MainScope().launch {
-                    recyclerView?.adapter = TasksAdapter(tasks, requireContext())
-                }
+        GlobalScope.launch {
+            val tasksFromDb = db.taskDao().loadAllTasks()
+            if (tasksFromDb.isEmpty()) {
+                val call = getRetrofit().create(TaskAPIService::class.java).getAllTasks().execute()
+                val taskResponse = call.body() as TaskResponse
+                StaticTasks.tasks = taskResponse.tasks
+                db.taskDao().insertAllTasks(taskResponse.tasks)
+            } else {
+                StaticTasks.tasks = tasksFromDb
+            }
+            MainScope().launch {
+                recyclerView?.adapter = TasksAdapter(requireContext())
             }
         }
 
@@ -76,7 +69,6 @@ class Tasks : Fragment() {
             tasks = tasks + task
             recyclerView?.adapter = TasksAdapter(tasks, requireContext())
         }
-
          */
 
 
@@ -96,31 +88,33 @@ class Tasks : Fragment() {
         */
         // Find the views
 
-        addButtonPortrait = view.findViewById(R.id.add_btn) as Button?
-        etContent = view.findViewById(R.id.taskContent) as EditText
-        priorityButton = view.findViewById(R.id.priorityButton) as Button
-        orderByButton = view.findViewById(R.id.orderByButton) as Button?
-        orderByButtonLandscape = view.findViewById(R.id.orderByButtonLandscape) as Button?
-        val searchView = view.findViewById(R.id.searchView) as SearchView
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                //TODO: backend search
-                filterTasks(query)
-                return false
-            }
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val searchView = view.findViewById(R.id.searchView) as SearchView
+            searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    //TODO: backend search
+                    filterTasks(query)
+                    return false
+                }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                //TODO: backend search
-                filterTasks(newText)
-                return false
-            }
-        })
+                override fun onQueryTextChange(newText: String): Boolean {
+                    //TODO: backend search
+                    filterTasks(newText)
+                    return false
+                }
+            })
 
-        val addButton = view.findViewById(R.id.add_btn) as Button
-        addButton.setOnClickListener {
-            onAddButtonClicked()
+            val addButton = view.findViewById(R.id.add_btn_portrait) as Button
+            addButton.setOnClickListener {
+                onAddButtonClicked()
+            }
+        } else {
+            val addButton = view.findViewById(R.id.add_btn_landscape) as Button
+            addButton.setOnClickListener {
+                onAddButtonClicked()
+            }
         }
-
 
         return view // Return the view
     }
@@ -129,13 +123,23 @@ class Tasks : Fragment() {
     @SuppressLint("NotifyDataSetChanged") // Suppress the warning about notifyDataSetChanged()
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-
     }
     private fun filterTasks(searchText: String) {
-        val filteredTasks = tasks.filter { task ->
-            task.content?.contains(searchText, true) ?: false
+        if (searchText.isNotEmpty()) {
+            var filteredTasks = StaticTasks.tasks.filter { task ->
+                task.content?.contains(searchText, true) ?: false
+            }
+            StaticTasks.tasks = filteredTasks as MutableList<TaskData>
+            recyclerView?.adapter = TasksAdapter(requireContext())
+        } else {
+            GlobalScope.launch {
+                var tasksFromDb = db.taskDao().loadAllTasks()
+                if (tasksFromDb.isNotEmpty()) StaticTasks.tasks = tasksFromDb
+                MainScope().launch {
+                    recyclerView?.adapter = TasksAdapter(requireContext())
+                }
+            }
         }
-        recyclerView?.adapter = TasksAdapter(filteredTasks, requireContext())
     }
 
     private fun onAddButtonClicked() {
@@ -323,8 +327,4 @@ class Tasks : Fragment() {
             .baseUrl("https://my-json-server.typicode.com/ManelRosPuig/nca-android-2/")
             .addConverterFactory(GsonConverterFactory.create()) .build()
     }
-
-
-
-
 }

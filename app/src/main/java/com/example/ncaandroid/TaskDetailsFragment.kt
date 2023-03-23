@@ -1,8 +1,10 @@
 package com.example.ncaandroid
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +12,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 private lateinit var db: AppDatabase
-private lateinit var tasks: MutableList<TaskData>
+// private lateinit var tasks: MutableList<TaskData>
 private lateinit var recyclerView: RecyclerView
 class TaskDetailsFragment : Fragment() {
 
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,13 +33,19 @@ class TaskDetailsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_task_details, container, false)
 
+        val webValueTextView = view.findViewById<EditText>(R.id.webValueTextView)
+        webValueTextView.setOnClickListener {
+            val web = webValueTextView.text.toString()
+            if (web.isNotEmpty()) startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(web)))
+        }
+
         // Get the task data from the arguments bundle
         val taskData = arguments?.getSerializable("taskData") as TaskData
-        db = AppDatabase.getInstance(requireContext())!!
+        db = AppDatabase.getInstance(requireContext())
 
         // Get reference to the RecyclerView and the tasks list
         recyclerView = requireActivity().findViewById(R.id.recyclerview_tasks)
-        tasks = (recyclerView.adapter as TasksAdapter).tasks as MutableList<TaskData>
+        // tasks = (recyclerView.adapter as TasksAdapter).tasks as MutableList<TaskData>
 
         // Set the EditTexts with the task data
         view.findViewById<EditText>(R.id.contentValueTextView).setText(taskData.content)
@@ -60,7 +73,7 @@ class TaskDetailsFragment : Fragment() {
                 view.findViewById<EditText>(R.id.webValueTextView).text.toString()
             )
             // Update the task in the list of tasks
-            tasks[tasks.indexOf(taskData)] = task
+            StaticTasks.tasks[StaticTasks.tasks.indexOf(taskData)] = task
            GlobalScope.launch {
                //Update the task in the database
                db.taskDao().update(task)

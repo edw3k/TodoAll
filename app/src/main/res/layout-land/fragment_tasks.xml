@@ -10,71 +10,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:queryHint="Search tasks"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" /> -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_tasks"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:clipToPadding="false"
             android:paddingBottom="16dp"
             android:scrollbars="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/taskContent"
+            app:layout_constraintBottom_toTopOf="@+id/add_btn_landscape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
             tools:listitem="@layout/task_item" />
 
         <Button
-            android:id="@+id/orderByButtonLandscape"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="#FFFFFF"
-            android:text="@string/order_by"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/add_button"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <EditText
-            android:id="@+id/taskContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/insert_task_hint"
-            android:inputType="textPersonName"
-            android:textColorHint="@color/hint"
-            app:layout_constraintBottom_toTopOf="@+id/orderByButtonLandscape"
-            app:layout_constraintEnd_toStartOf="@+id/priorityButton"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/priorityButton"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:cornerRadius="@android:dimen/app_icon_size"
-            app:icon="@drawable/ic_baseline_flag_24"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/add_button"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <Button
-            android:id="@+id/add_button"
+            android:id="@+id/add_btn_landscape"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -82,10 +46,10 @@
             android:layout_marginBottom="16dp"
             android:background="#FFFFFF"
             android:text="@string/add_task"
+            android:textColor="#039BE5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/orderByButtonLandscape" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

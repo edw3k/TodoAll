@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +13,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
 // This is the adapter class for the RecyclerView that will display the tasks
-class TasksAdapter(var tasks: List<TaskData>, val context: Context)
+class TasksAdapter(val context: Context)
     : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
-
-    public var temp = tasks
 
     // Override the onCreateViewHolder method to inflate the layout for each item
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,13 +32,13 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
 
     // Override the getItemCount method to return the number of items in the list
     override fun getItemCount(): Int {
-        return tasks.size
+        return StaticTasks.tasks.size
     }
 
     // Override the onBindViewHolder method to set the data for each item
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val task = tasks[position] // Get the task at the current position
+        val task = StaticTasks.tasks[position] // Get the task at the current position
         holder.tv.text = task.content // Set the content of the task
         holder.checkBox.isChecked =
             task.isDone == true // Set the checkbox to checked if the task is done
@@ -80,19 +75,21 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
         holder.trashButton.setOnClickListener {
             val position = holder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                val task = tasks[position]
+                val task = StaticTasks.tasks[position]
                 val taskDAO = AppDatabase.getInstance(context)?.taskDao()
                 taskDAO?.let {
                     GlobalScope.launch {
                         it.deleteById(task.id!!.toLong())
+                        MainScope().launch {
+                            StaticTasks.tasks.removeAt(position)
+                            notifyItemRemoved(position)
+                        }
                     }
-                    tasks = tasks.filter { it != task }
-                    notifyDataSetChanged()
                 }
             }
         }
 
-                    // When the user clicks the checkbox
+        // When the user clicks the checkbox
         holder.checkBox.setOnClickListener {
             task.isDone = holder.checkBox.isChecked // Set the isDone property of the task to the
             // value of the checkbox
@@ -119,7 +116,6 @@ class TasksAdapter(var tasks: List<TaskData>, val context: Context)
             transaction.addToBackStack(null)
             transaction.commit()
         }
-
     }
 
     private fun getRetrofit(): Retrofit {

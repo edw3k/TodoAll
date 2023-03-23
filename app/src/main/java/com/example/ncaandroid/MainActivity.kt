@@ -1,24 +1,21 @@
 package com.example.ncaandroid
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.ncaandroid.databinding.ActivityMainBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding // View binding
-    private lateinit var notes: Notes // Notes fragment
-    private lateinit var tasks: Tasks // Tasks fragment
-    private lateinit var stopwatch: Stopwatch // Stopwatch fragment
-    private lateinit var detailViewNote: DetailViewNote // Add note fragment
-    private lateinit var activeFragment: Fragment // Active fragment
-    private val fragmentManager: FragmentManager = supportFragmentManager // Fragment manager
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var notes: Notes
+    private lateinit var tasks: Tasks
+    private lateinit var stopwatch: Stopwatch
+    private lateinit var detailViewNote: DetailViewNote
+    private lateinit var activeFragment: Fragment
+    private val fragmentManager: FragmentManager = supportFragmentManager
     private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,22 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch {
             db = AppDatabase.getInstance(applicationContext)!!
-            /*
-            db.taskDao().insert(TaskData(
-                null,
-                "GOL",
-                2,
-                true,
-                "2021-05-01",
-                "644602630",
-                "http://timeride.com"
-            ))
-
-             */
-
         }
 
-        // Remove the title bar
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
         supportActionBar?.hide()
 
